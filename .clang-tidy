@@ -1,0 +1,34 @@
+# .clang-tidy file
+
+FormatStyle: file
+
+CheckOptions:
+  - { key: readability-implicit-bool-conversion.AllowPointerConditions, value: 1 }
+  - { key: modernize-use-override.AllowOverrideAndFinal, value: 1 }
+  - { key: cppcoreguidelines-explicit-virtual-functions.AllowOverrideAndFinal, value: 1 }
+
+Checks: '
+  -*,
+  bugprone-*,
+  performance-*,
+
+  cppcoreguidelines-*
+  -cppcoreguidelines-non-private-member-variables-in-classes,
+
+  google-global-names-in-headers,
+  google-explicit-constructor,
+
+  misc-*,
+  -misc-non-private-member-variables-in-classes,
+  -misc-include-cleaner,
+
+  modernize-*,
+  -modernize-use-trailing-return-type,
+
+  readability-*,
+  -readability-named-parameter,
+  -readability-braces-around-statements,
+  -readability-static-accessed-through-instance,
+  -readability-identifier-length,
+  -readability-magic-numbers
+  '

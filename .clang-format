@@ -1,0 +1,64 @@
+# .clang-format file
+
+# Rules 7, 9
+BasedOnStyle: LLVM
+Language: Cpp
+
+# Rule 1
+ColumnLimit: 110
+
+# Rule 2
+IndentWidth: 4
+
+# Rule 3
+BreakBeforeBraces: Allman
+
+# Rule 4
+BreakConstructorInitializers: BeforeComma
+
+# Rule 5
+DerivePointerAlignment: false
+PointerAlignment: Left
+ReferenceAlignment: Pointer
+
+# Rule 6
+AllowShortFunctionsOnASingleLine: None
+
+# Rule 8
+LineEnding: LF
+
+# Rule 25
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: ^<Q.*>
+    Priority: 1
+    SortPriority: 0
+    CaseSensitive: false
+  - Priority: 2
+    Regex: ^<.*>
+    CaseSensitive: false
+    SortPriority: 0
+  - Regex: ^".*"
+    Priority: 3
+    SortPriority: 0
+    CaseSensitive: false
+
+# Other
+EmptyLineBeforeAccessModifier: Always
+AccessModifierOffset: -4
+BinPackArguments: true
+BinPackParameters: true
+AllowAllParametersOfDeclarationOnNextLine: true
+AlignEscapedNewlines: Left
+SeparateDefinitionBlocks: Always
+QualifierAlignment: Custom
+QualifierOrder:
+  - inline
+  - static
+  - const
+  - type
+SpacesInLineCommentPrefix:
+  Minimum: 0
+  Maximum: -1
+SpaceInEmptyBlock: true
+SpaceBeforeCpp11BracedList: true
