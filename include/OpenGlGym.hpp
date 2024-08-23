@@ -13,8 +13,8 @@ public:
     [[nodiscard]] bool Init(); 
     [[nodiscard]] static unsigned int CreateShader(const std::string& path);
 
-    void CreateBuffer() const;
-    void RenderLoop();   
+    void CreateDrawElement() const;
+    void RenderLoop() const;
 
 private:
     struct ShaderProgramSource
@@ -24,7 +24,10 @@ private:
     };
 
     [[nodiscard]] static ShaderProgramSource ParseShader(const std::string& path);
-    [[nodiscard]] static unsigned int CompileShader(unsigned int type, std::string_view source); 
+    [[nodiscard]] static unsigned int CompileShader(unsigned int type, std::string_view source);
+    static void CreateVertexBuffer();
+    static void CreateIndexBuffer();
+    static void CreateShaderProgram();
 
     GLFWwindow* window{};
     bool m_initilized {false};

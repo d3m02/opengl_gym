@@ -109,22 +109,40 @@ unsigned int OpenGlGym::CreateShader(const std::string& path)
     return program;
 }
 
-void OpenGlGym::CreateBuffer() const
+void OpenGlGym::CreateVertexBuffer()
 {
-    if (!m_initilized)
-        return;
-
     unsigned int v_buff;
     glGenBuffers(1, &v_buff);
     glBindBuffer(GL_ARRAY_BUFFER, v_buff);
 
-    std::array<float, 6> vertices {-0.5F, -0.5F, 0.0F, 0.5F, 0.5F, -0.5F};
+    std::array vertices { -0.5F, -0.5F,   // 0
+                           0.5F, -0.5F,   // 1
+                           0.5F,  0.5F,   // 2
+                          -0.5F,  0.5F }; // 3
 
-    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(sizeof(float) * vertices.size()), vertices.data(),
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(sizeof(vertices)), vertices.data(),
                  GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr);
+}
+
+void OpenGlGym::CreateIndexBuffer()
+{
+    unsigned int ibo {};
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+
+    std::array indices { 0u, 1u, 2u,
+                         2u, 3u, 0u };
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                 static_cast<GLsizeiptr>(sizeof(indices)),
+                 indices.data(),
+                 GL_STATIC_DRAW);
+}
+
+void OpenGlGym::CreateShaderProgram()
+{
 #ifdef RES_FOLDER
     std::string resFolder = RES_FOLDER;
 #else
@@ -133,18 +151,28 @@ void OpenGlGym::CreateBuffer() const
     glUseProgram(CreateShader(resFolder + "/shaders/Basic.shader"));
 }
 
-void OpenGlGym::RenderLoop()
+void OpenGlGym::CreateDrawElement() const
 {
     if (!m_initilized)
         return;
-    
+
+    CreateVertexBuffer();
+    CreateIndexBuffer();
+    CreateShaderProgram();
+}
+
+void OpenGlGym::RenderLoop() const
+{
+    if (!m_initilized)
+        return;
+
     /* Loop until the user closes the window */
     while (glfwWindowShouldClose(window) == GLFW_FALSE)
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
