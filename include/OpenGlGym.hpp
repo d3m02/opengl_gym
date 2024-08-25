@@ -28,6 +28,7 @@ private:
     static void CreateVertexBuffer();
     static void CreateIndexBuffer();
     static void CreateShaderProgram();
+    static bool GlLogCall();
 
     GLFWwindow* window{};
     bool m_initilized {false};

@@ -4,10 +4,25 @@
 #include <iostream>
 #include <sstream>
 #include <array>
+#include <cassert>
+
+#define DebugGlCall(x) while (glGetError());\
+    x;\
+    assert(GlLogCall());
 
 OpenGlGym::~OpenGlGym()
 {
     glfwTerminate();
+}
+
+bool OpenGlGym::GlLogCall()
+{
+	while (auto error = glGetError()) 
+	{
+		std::cout << "[OpenGL error]" << error << std::endl;
+        return false;
+	}
+    return true;
 }
 
 bool OpenGlGym::Init()
@@ -171,8 +186,7 @@ void OpenGlGym::RenderLoop() const
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
-
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        DebugGlCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
