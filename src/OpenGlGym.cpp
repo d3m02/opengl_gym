@@ -163,7 +163,11 @@ void OpenGlGym::CreateShaderProgram()
 #else
     std::string resFolder {};
 #endif
-    glUseProgram(CreateShader(resFolder + "/shaders/Basic.shader"));
+    auto shader = CreateShader(resFolder + "/shaders/Basic.shader");
+    glUseProgram(shader);
+    int location = glGetUniformLocation(shader, "u_Color");
+    assert(location != -1);
+    glUniform4f(location, 0.2F, 0.3F, 0.8F, 1.0F);
 }
 
 void OpenGlGym::CreateDrawElement() const
