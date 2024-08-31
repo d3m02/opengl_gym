@@ -6,7 +6,6 @@ int main()
     if (!ogg.Init())
         return -1;
 
-    ogg.CreateDrawElement();
-    ogg.RenderLoop();
+    ogg.Run();
     return 0;
 }

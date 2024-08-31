@@ -9,8 +9,22 @@ add_executable(opengl src/main.cpp)
 target_include_directories(opengl PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_sources(opengl
     PRIVATE     
-        src/OpenGlGym.cpp
         include/OpenGlGym.hpp
+        include/Common.hpp
+        include/VertexBuffer.hpp
+        include/IndexBuffer.hpp
+        include/VertexBufferLayout.hpp
+        include/VertexArray.hpp
+        include/Shader.hpp
+        include/Renderer.hpp
+        
+        src/OpenGlGym.cpp
+        src/Common.cpp
+        src/VertexBuffer.cpp
+        src/IndexBuffer.cpp
+        src/VertexArray.cpp
+        src/Shader.cpp
+        src/Renderer.cpp
 )
 
 add_compile_definitions (RES_FOLDER="${CMAKE_CURRENT_SOURCE_DIR}/res")
