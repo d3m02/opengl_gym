@@ -8,7 +8,7 @@
 
 #define DebugGlCall(x) while (glGetError());\
     x;\
-    assert(GlLogCall());
+    assert(OpenGlGym::GlLogCall());
 
 OpenGlGym::~OpenGlGym()
 {
@@ -30,6 +30,10 @@ bool OpenGlGym::Init()
     /* Initialize the library */
     if (glfwInit() == GLFW_FALSE)
         return false;
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(640, 480, "Hello World", nullptr, nullptr);
@@ -124,6 +128,12 @@ unsigned int OpenGlGym::CreateShader(const std::string& path)
     return program;
 }
 
+void OpenGlGym::CreateVertexArray()
+{
+    glGenVertexArrays(1, &m_vao);
+    glBindVertexArray(m_vao);
+}
+
 void OpenGlGym::CreateVertexBuffer()
 {
     unsigned int v_buff;
@@ -144,12 +154,11 @@ void OpenGlGym::CreateVertexBuffer()
 
 void OpenGlGym::CreateIndexBuffer()
 {
-    unsigned int ibo {};
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glGenBuffers(1, &m_ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
 
-    std::array indices { 0u, 1u, 2u,
-                         2u, 3u, 0u };
+    std::array indices { 0U, 1U, 2U,
+                         2U, 3U, 0U };
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,
                  static_cast<GLsizeiptr>(sizeof(indices)),
                  indices.data(),
@@ -163,34 +172,57 @@ void OpenGlGym::CreateShaderProgram()
 #else
     std::string resFolder {};
 #endif
-    auto shader = CreateShader(resFolder + "/shaders/Basic.shader");
-    glUseProgram(shader);
-    int location = glGetUniformLocation(shader, "u_Color");
-    assert(location != -1);
-    glUniform4f(location, 0.2F, 0.3F, 0.8F, 1.0F);
+    m_shader = CreateShader(resFolder + "/shaders/Basic.shader");
+    glUseProgram(m_shader);
+    m_uLocation = glGetUniformLocation(m_shader, "u_Color");
 }
 
-void OpenGlGym::CreateDrawElement() const
+void OpenGlGym::CreateDrawElement()
 {
     if (!m_initilized)
         return;
 
-    CreateVertexBuffer();
-    CreateIndexBuffer();
-    CreateShaderProgram();
+    DebugGlCall(CreateVertexArray());
+    DebugGlCall(CreateVertexBuffer());
+    DebugGlCall(CreateIndexBuffer());
+    DebugGlCall(CreateShaderProgram());
 }
 
-void OpenGlGym::RenderLoop() const
+void OpenGlGym::RenderLoop()
 {
     if (!m_initilized)
         return;
+
+    /* Unbind everything */
+    glBindVertexArray(0);
+    glUseProgram(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    float r {0.5F};
+    float increment {0.05F};
 
     /* Loop until the user closes the window */
     while (glfwWindowShouldClose(window) == GLFW_FALSE)
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
+        
+
+        /* Draw flow */
+        if (r > 1.0F)
+            increment = -0.05F;
+        else if (r < 0.0F)
+            increment = 0.05F;
+        r += increment;
+
+        glUseProgram(m_shader);
+        glUniform4f(m_uLocation, r, 0.3F, 0.8F, 1.0F);
+         
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
+
         DebugGlCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+        
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
