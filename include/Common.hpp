@@ -4,8 +4,9 @@
 
 #include <cassert>
 
-#define GlCall(x) while (glGetError());\
+#define GlCall(x) GlClearErrors();\
     x;\
     assert(GlLogCall());
 
 bool GlLogCall();
+void GlClearErrors();

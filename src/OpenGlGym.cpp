@@ -11,10 +11,18 @@
 #include "IndexBuffer.hpp"
 #include "VertexBufferLayout.hpp"
 #include "Shader.hpp"
+#include "Texture.hpp"
 
 OpenGlGym::~OpenGlGym()
 {
     glfwTerminate();
+}
+
+void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
+                                const GLchar* message, const void* userParam)
+{
+    fprintf(stdout, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+            (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type, severity, message);
 }
 
 bool OpenGlGym::Init()
@@ -28,7 +36,7 @@ bool OpenGlGym::Init()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
-    pWindow = glfwCreateWindow(640, 480, "Hello World", nullptr, nullptr);
+    pWindow = glfwCreateWindow(640, 480, "OpenGL gym", nullptr, nullptr);
     if (!pWindow)
     {
         return false;
@@ -45,6 +53,10 @@ bool OpenGlGym::Init()
     m_initilized = true;
 
     return m_initilized;
+
+    // During init, enable debug output
+    glEnable              ( GL_DEBUG_OUTPUT );
+    glDebugMessageCallback( MessageCallback, 0 );
 }
 
 void OpenGlGym::Run()
@@ -52,10 +64,11 @@ void OpenGlGym::Run()
     if (!m_initilized)
         return;
     
-    std::array vertices { -0.5F, -0.5F,   // 0
-                           0.5F, -0.5F,   // 1
-                           0.5F,  0.5F,   // 2
-                          -0.5F,  0.5F }; // 3
+    std::array vertices { -0.5F, -0.5F, 0.0F, 0.0F,   // 0
+                           0.5F, -0.5F, 1.0F, 0.0F,  // 1
+                           0.5F,  0.5F, 1.0F, 1.0F,  // 2
+                          -0.5F,  0.5F, 0.0F, 1.0F}; // 3
+    
     std::array indices { 0U, 1U, 2U,
                          2U, 3U, 0U };
                          
@@ -65,20 +78,34 @@ void OpenGlGym::Run()
     std::string resFolder {};
 #endif
 
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+
     VertexArray va;
     VertexBuffer vb(vertices.data(), sizeof(vertices));
 
     VertexBufferLayout layout;
     layout.Push<float>(2);
+    layout.Push<float>(2);
     
     va.AddBuffer(vb, layout);
-
-    /* Index buffer */
 
     IndexBuffer ib(indices.data(), sizeof(indices));
 
     Shader shader(resFolder + "/shaders/Basic.shader");
+    shader.Bind();
+    
+    Texture texture(resFolder + "/textures/nene.png");
+    texture.Bind();
+    shader.SetUniform1i("u_TextureSlot", 0);
+
+    va.Unbind();
+    vb.Unbind();
+    ib.Unbind();
+    shader.Unbind();
+
     Renderer renderer;
+    
     float r {0.5F};
     float increment {0.05F};
 
@@ -90,6 +117,7 @@ void OpenGlGym::Run()
 
         shader.Bind();
         shader.SetUniform4f("u_Color", {r, 0.5F, 0.5F, 1.0F});
+
         renderer.Draw(va, ib, shader);
         
         /* Post processing */

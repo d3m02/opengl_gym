@@ -44,8 +44,9 @@ template<>
 inline void VertexBufferLayout::Push<float>(int count)
 {
     m_elements.push_back({ GL_FLOAT,  count, GL_FALSE });
-    m_stride += count * VertexBufferElement::GetSizeOfType(GL_FALSE);
+    m_stride += count * VertexBufferElement::GetSizeOfType(GL_FLOAT);
 }
+
 template<>
 inline void VertexBufferLayout::Push<unsigned int>(int count)
 {

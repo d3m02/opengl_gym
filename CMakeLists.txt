@@ -17,6 +17,7 @@ target_sources(opengl
         include/VertexArray.hpp
         include/Shader.hpp
         include/Renderer.hpp
+        include/Texture.hpp
         
         src/OpenGlGym.cpp
         src/Common.cpp
@@ -25,6 +26,15 @@ target_sources(opengl
         src/VertexArray.cpp
         src/Shader.cpp
         src/Renderer.cpp
+        src/Texture.cpp
+)
+
+
+target_include_directories(opengl PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/stb)
+target_sources(opengl
+    PRIVATE     
+        external/stb/stb_image.h
+        external/stb/stb_image.c
 )
 
 add_compile_definitions (RES_FOLDER="${CMAKE_CURRENT_SOURCE_DIR}/res")
