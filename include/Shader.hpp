@@ -5,6 +5,8 @@
 #include <unordered_map>
 
 #include <GL/glew.h>
+#include <glm.hpp>
+
 #include "Common.hpp"
 
 class Shader 
@@ -20,7 +22,13 @@ public:
     void SetUniform4f(const std::string& name, const float(&values)[N])
     {
         static_assert(N == 4, "The function requires exactly 4 float values.");
-         GlCall(glUniform4f(GetUniformLocation(name), values[0], values[1], values[2], values[3]));
+        GlCall(glUniform4f(GetUniformLocation(name), values[0], values[1], values[2], values[3]));
+    }
+
+    
+    void SetUniformMat4f(const std::string& name, const glm::mat4& matrix)
+    {
+        GlCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]));
     }
 
     void SetUniform1i(const std::string& name, int val)

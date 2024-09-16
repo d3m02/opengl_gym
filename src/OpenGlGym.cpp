@@ -1,8 +1,10 @@
 #include "OpenGlGym.hpp"
 
 #include <iostream>
-
 #include <array>
+
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
 
 #include "Common.hpp"
 #include "Renderer.hpp"
@@ -12,6 +14,8 @@
 #include "VertexBufferLayout.hpp"
 #include "Shader.hpp"
 #include "Texture.hpp"
+#include "ext/matrix_clip_space.hpp"
+
 
 OpenGlGym::~OpenGlGym()
 {
@@ -95,9 +99,14 @@ void OpenGlGym::Run()
     Shader shader(resFolder + "/shaders/Basic.shader");
     shader.Bind();
     
+    // Load texture
     Texture texture(resFolder + "/textures/nene.png");
     texture.Bind();
     shader.SetUniform1i("u_TextureSlot", 0);
+    
+    // Projection matrix
+    glm::mat4 proj = glm::ortho(-2.F, 2.F, -1.5F, 1.5F, -1.F, 1.F);
+    shader.SetUniformMat4f("u_MVP", proj);
 
     va.Unbind();
     vb.Unbind();

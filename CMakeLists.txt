@@ -50,3 +50,7 @@ target_link_libraries(opengl PRIVATE glfw)
 add_subdirectory(external/GLEW)
 target_include_directories(opengl PRIVATE external/GLEW/include)
 target_link_libraries(opengl PRIVATE libglew_static)
+
+add_subdirectory(external/GLM)
+target_include_directories(opengl PRIVATE external/GLM/glm)
+target_link_libraries(opengl PRIVATE glm::glm)
