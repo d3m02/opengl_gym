@@ -5,6 +5,12 @@
 
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
+#include <ext/matrix_clip_space.hpp>
+#include <ext/matrix_transform.hpp>
+#include <imgui.h>
+#include <backends/imgui_impl_opengl3.h>
+#include <backends/imgui_impl_glfw.h>
+
 
 #include "Common.hpp"
 #include "Renderer.hpp"
@@ -14,12 +20,13 @@
 #include "VertexBufferLayout.hpp"
 #include "Shader.hpp"
 #include "Texture.hpp"
-#include "ext/matrix_clip_space.hpp"
-#include "ext/matrix_transform.hpp"
 
 
 OpenGlGym::~OpenGlGym()
 {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
     glfwTerminate();
 }
 
@@ -49,6 +56,11 @@ bool OpenGlGym::Init()
 
     /* Make the window's context current */
     glfwMakeContextCurrent(pWindow);
+
+    ImGui::CreateContext();
+    ImGui_ImplGlfw_InitForOpenGL(pWindow, true);
+    ImGui_ImplOpenGL3_Init();
+    ImGui::StyleColorsDark();
 
     if (auto glewInitStat = glewInit(); glewInitStat != GLEW_OK)
     {
@@ -109,10 +121,6 @@ void OpenGlGym::Run()
     // Projection matrix
     glm::mat4 proj = glm::ortho(0.F, 960.F, 0.F, 540.F, -1.F, 1.F);
     glm::mat4 view = glm::translate(glm::mat4(1.F), glm::vec3(100, 0, 0));
-    glm::mat4 model = glm::translate(glm::mat4(1.F), glm::vec3(50, 50, 0));
-
-    glm::mat4 mvp = proj * view * model;
-    shader.SetUniformMat4f("u_MVP", mvp);
 
     va.Unbind();
     vb.Unbind();
@@ -123,14 +131,24 @@ void OpenGlGym::Run()
     
     float r {0.5F};
     float increment {0.05F};
+    
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
 
+    glm::vec3 translation(50, 50, 0);
     /* Loop until the user closes the window */
     while (glfwWindowShouldClose(pWindow) == GLFW_FALSE)
     {
         renderer.Clear();
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
         /* Draw flow */
 
         shader.Bind();
+        glm::mat4 model = glm::translate(glm::mat4(1.F), translation);
+        glm::mat4 mvp = proj * view * model;
+        shader.SetUniformMat4f("u_MVP", mvp);
         shader.SetUniform4f("u_Color", {r, 0.5F, 0.5F, 1.0F});
 
         renderer.Draw(va, ib, shader);
@@ -142,6 +160,15 @@ void OpenGlGym::Run()
             increment = 0.05F;
         r += increment;
 
+        {
+            ImGui::SliderFloat3("Translation", &translation.x, 0.0F, 960.0F);
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 
+                        1000.0F / ImGui::GetIO().Framerate, 
+                        ImGui::GetIO().Framerate);
+        }
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         /* Swap front and back buffers */
         glfwSwapBuffers(pWindow);
 
