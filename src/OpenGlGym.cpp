@@ -15,6 +15,7 @@
 #include "Shader.hpp"
 #include "Texture.hpp"
 #include "ext/matrix_clip_space.hpp"
+#include "ext/matrix_transform.hpp"
 
 
 OpenGlGym::~OpenGlGym()
@@ -40,7 +41,7 @@ bool OpenGlGym::Init()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
-    pWindow = glfwCreateWindow(640, 480, "OpenGL gym", nullptr, nullptr);
+    pWindow = glfwCreateWindow(960, 540, "OpenGL gym", nullptr, nullptr);
     if (!pWindow)
     {
         return false;
@@ -68,10 +69,11 @@ void OpenGlGym::Run()
     if (!m_initilized)
         return;
     
-    std::array vertices { -0.5F, -0.5F, 0.0F, 0.0F,   // 0
-                           0.5F, -0.5F, 1.0F, 0.0F,  // 1
-                           0.5F,  0.5F, 1.0F, 1.0F,  // 2
-                          -0.5F,  0.5F, 0.0F, 1.0F}; // 3
+    std::array vertices { 100.F, 100.F, 0.0F, 0.0F,   // 0
+                          400.F, 100.F, 1.0F, 0.0F,   // 1
+                          400.F, 400.F, 1.0F, 1.0F,   // 2
+                          100.F, 400.F, 0.0F, 1.0F }; // 3
+    
     
     std::array indices { 0U, 1U, 2U,
                          2U, 3U, 0U };
@@ -105,8 +107,12 @@ void OpenGlGym::Run()
     shader.SetUniform1i("u_TextureSlot", 0);
     
     // Projection matrix
-    glm::mat4 proj = glm::ortho(-2.F, 2.F, -1.5F, 1.5F, -1.F, 1.F);
-    shader.SetUniformMat4f("u_MVP", proj);
+    glm::mat4 proj = glm::ortho(0.F, 960.F, 0.F, 540.F, -1.F, 1.F);
+    glm::mat4 view = glm::translate(glm::mat4(1.F), glm::vec3(100, 0, 0));
+    glm::mat4 model = glm::translate(glm::mat4(1.F), glm::vec3(50, 50, 0));
+
+    glm::mat4 mvp = proj * view * model;
+    shader.SetUniformMat4f("u_MVP", mvp);
 
     va.Unbind();
     vb.Unbind();
