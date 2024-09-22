@@ -81,10 +81,10 @@ void OpenGlGym::Run()
     if (!m_initilized)
         return;
     
-    std::array vertices { 100.F, 100.F, 0.0F, 0.0F,   // 0
-                          400.F, 100.F, 1.0F, 0.0F,   // 1
-                          400.F, 400.F, 1.0F, 1.0F,   // 2
-                          100.F, 400.F, 0.0F, 1.0F }; // 3
+    std::array vertices { -50.F, -50.F, 0.0F, 0.0F,   // 0
+                          50.F, -50.F, 1.0F, 0.0F,   // 1
+                          50.F, 50.F, 1.0F, 1.0F,   // 2
+                          -50.F, 50.F, 0.0F, 1.0F }; // 3
     
     
     std::array indices { 0U, 1U, 2U,
@@ -120,7 +120,7 @@ void OpenGlGym::Run()
     
     // Projection matrix
     glm::mat4 proj = glm::ortho(0.F, 960.F, 0.F, 540.F, -1.F, 1.F);
-    glm::mat4 view = glm::translate(glm::mat4(1.F), glm::vec3(100, 0, 0));
+    glm::mat4 view = glm::translate(glm::mat4(1.F), glm::vec3(0, 0, 0));
 
     va.Unbind();
     vb.Unbind();
@@ -134,7 +134,8 @@ void OpenGlGym::Run()
     
     ImGuiIO& io = ImGui::GetIO(); (void)io;
 
-    glm::vec3 translation(50, 50, 0);
+    glm::vec3 translationA(50, 50, 0);
+    glm::vec3 translationB(400, 50, 0);
     /* Loop until the user closes the window */
     while (glfwWindowShouldClose(pWindow) == GLFW_FALSE)
     {
@@ -145,13 +146,27 @@ void OpenGlGym::Run()
         ImGui::NewFrame();
         /* Draw flow */
 
-        shader.Bind();
-        glm::mat4 model = glm::translate(glm::mat4(1.F), translation);
-        glm::mat4 mvp = proj * view * model;
-        shader.SetUniformMat4f("u_MVP", mvp);
-        shader.SetUniform4f("u_Color", {r, 0.5F, 0.5F, 1.0F});
+        {
+            glm::mat4 model = glm::translate(glm::mat4(1.F), translationA);
+            glm::mat4 mvp = proj * view * model;
+            
+            shader.Bind();    
+            shader.SetUniformMat4f("u_MVP", mvp);
+            shader.SetUniform4f("u_Color", {r, 0.5F, 0.5F, 1.0F});
+                    
+            renderer.Draw(va, ib, shader);
+        }
 
-        renderer.Draw(va, ib, shader);
+        {
+            glm::mat4 model = glm::translate(glm::mat4(1.F), translationB);
+            glm::mat4 mvp = proj * view * model;
+            
+            shader.Bind();
+            shader.SetUniformMat4f("u_MVP", mvp);
+            shader.SetUniform4f("u_Color", {r, 0.5F, 0.5F, 1.0F});
+            
+            renderer.Draw(va, ib, shader);
+        }
         
         /* Post processing */
         if (r > 1.0F)
@@ -161,7 +176,8 @@ void OpenGlGym::Run()
         r += increment;
 
         {
-            ImGui::SliderFloat3("Translation", &translation.x, 0.0F, 960.0F);
+            ImGui::SliderFloat3("TranslationA", &translationA.x, 0.0F, 960.0F);
+            ImGui::SliderFloat3("TranslationB", &translationB.x, 0.0F, 960.0F);
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 
                         1000.0F / ImGui::GetIO().Framerate, 
                         ImGui::GetIO().Framerate);

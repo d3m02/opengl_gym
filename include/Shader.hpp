@@ -53,4 +53,5 @@ private:
     unsigned int m_rendererID {0};
     std::string m_path;
     std::unordered_map<std::string, int> m_uLocationCache;
+    mutable bool m_isBound { false };
 };

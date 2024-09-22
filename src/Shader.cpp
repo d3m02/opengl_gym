@@ -94,12 +94,20 @@ unsigned int Shader::CompileShader(unsigned int type, std::string_view source)
 
 void Shader::Bind() const
 {
+    if (m_isBound)
+        return;
+
     glUseProgram(m_rendererID);
+    m_isBound = true;
 }
 
 void Shader::Unbind() const
 {
+    if (!m_isBound)
+        return;
+    
     glUseProgram(0);
+    m_isBound = false;
 }
 
 
