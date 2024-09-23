@@ -6,7 +6,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable(OpenGlGym src/main.cpp)
 
-target_include_directories(OpenGlGym PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(OpenGlGym PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include  ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 target_sources(OpenGlGym
     PRIVATE     
         include/OpenGlGym.hpp
@@ -27,6 +27,12 @@ target_sources(OpenGlGym
         src/Shader.cpp
         src/Renderer.cpp
         src/Texture.cpp
+
+        tests/TestBase.hpp
+        tests/TestMenu.hpp
+        tests/TestMenu.cpp
+        tests/TestClearColor.hpp
+        tests/TestClearColor.cpp
 )
 
 
