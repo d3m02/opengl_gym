@@ -33,6 +33,8 @@ target_sources(OpenGlGym
         tests/TestMenu.cpp
         tests/TestClearColor.hpp
         tests/TestClearColor.cpp
+        tests/TestTexture2D.hpp
+        tests/TestTexture2D.cpp
 )
 
 

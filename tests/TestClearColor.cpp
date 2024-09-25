@@ -1,16 +1,11 @@
 #include "TestClearColor.hpp"
 
+#include <imgui.h>
+
 #include "Common.hpp"
-#include "imgui.h"
 
 namespace playtest
 {
-TestClearColor::TestClearColor()
-    : m_clearColor {0.4F, 0.3F, 0.6F, 1.F}
-{
-
-}
-
 
 void TestClearColor::OnRender()
 {

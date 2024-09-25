@@ -16,6 +16,7 @@
 
 #include "TestMenu.hpp"
 #include "TestClearColor.hpp"
+#include "TestTexture2D.hpp"
 
 OpenGlGym::~OpenGlGym()
 {
@@ -63,8 +64,8 @@ bool OpenGlGym::Init()
     m_initilized = true;
 
     // During init, enable debug output
-    glEnable              ( GL_DEBUG_OUTPUT );
-    glDebugMessageCallback( MessageCallback, 0 );
+   // glEnable              ( GL_DEBUG_OUTPUT );
+   // glDebugMessageCallback( MessageCallback, 0 );
 
     return m_initilized;
 }
@@ -78,11 +79,12 @@ void OpenGlGym::Run()
     glEnable(GL_BLEND);
 
     Renderer renderer;
-    test::Test* pCurrTest {};
-    auto* pTestMenu = new test::TestMenu(pCurrTest);
+    playtest::TestBase* pCurrTest {};
+    auto* pTestMenu = new playtest::TestMenu(pCurrTest);
     pCurrTest = pTestMenu;
 
-    pTestMenu->RegisterTest<test::TestClearColor>("Clear Color");
+    pTestMenu->RegisterTest<playtest::TestClearColor>("Clear Color");
+    pTestMenu->RegisterTest<playtest::TestTexture2D>("Render texture");
     
     while (glfwWindowShouldClose(pWindow) == GLFW_FALSE)
     {
@@ -110,7 +112,6 @@ void OpenGlGym::Run()
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         
-
         glfwSwapBuffers(pWindow);
         glfwPollEvents();
     }
