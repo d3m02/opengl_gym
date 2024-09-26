@@ -13,7 +13,7 @@ namespace playtest
 class TestMenu final : public TestBase
 {
 public:
-    TestMenu(TestBase*& pCurrTest);
+    explicit TestMenu(TestBase*& pCurrTest);
     ~TestMenu() override = default;
 
     template<typename T>

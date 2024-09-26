@@ -1,13 +1,11 @@
 #include "TestTexture2D.hpp"
 
 #include <imgui.h>
-#include <glm.hpp>
-#include <gtc/matrix_transform.hpp>
-#include <memory>
+#include <array>
 
-#include "Common.hpp"
-#include "VertexArray.hpp"
+#include "OGGCommon.hpp"
 #include "VertexBuffer.hpp"
+#include "VertexArray.hpp"
 #include "VertexBufferLayout.hpp"
 #include "IndexBuffer.hpp"
 #include "Shader.hpp"

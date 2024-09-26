@@ -5,7 +5,7 @@
 
 #include <stb_image.h>
 
-#include "Common.hpp"
+#include "OGGCommon.hpp"
 
 Texture::Texture(const std::string& path)
     : m_filePath(path)

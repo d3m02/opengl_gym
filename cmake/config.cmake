@@ -1,0 +1,10 @@
+
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+add_compile_definitions (RES_FOLDER="${CMAKE_CURRENT_SOURCE_DIR}/src/res")
+
+set(EXTERN_LIBS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/external)
+
+
+

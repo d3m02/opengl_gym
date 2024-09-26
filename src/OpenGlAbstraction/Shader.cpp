@@ -3,10 +3,12 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <cstdint>
 #include <sstream>
 #include <fstream>
 #include <iostream>
 #include <cassert>
+#include <utility>
 
 Shader::Shader(const std::string& path)
     : m_path(path)
@@ -39,7 +41,7 @@ unsigned int Shader::CreateShader(std::string_view path)
 
 Shader::ShaderProgramSource Shader::ParseShader(std::string_view path)
 {
-    enum class ShaderType
+    enum class ShaderType : int8_t
     {
         NONE = -1,
         VERTEX = 0,
@@ -53,16 +55,16 @@ Shader::ShaderProgramSource Shader::ParseShader(std::string_view path)
 
     while (getline(stream, line))
     {
-        if (line.find("#shader") != std::string::npos)
+        if (line.contains("#shader"))
         {
-            if (line.find("vertex") != std::string::npos)
+            if (line.contains("vertex"))
                 type = ShaderType::VERTEX;
-            else if (line.find("fragment") != std::string::npos)
+            else if (line.contains("fragment"))
                 type = ShaderType::FRAGMENT;
         }
         else if (type != ShaderType::NONE)
         {
-            ss[static_cast<int>(type)] << line << '\n';
+            ss[std::to_underlying(type)] << line << '\n';
         }
     }
     return {.VertexSource = ss[0].str(), .FragmentSource = ss[1].str()};
@@ -113,9 +115,12 @@ void Shader::Unbind() const
 
 int Shader::GetUniformLocation(const std::string& name)
 {
-    if (!m_uLocationCache.contains(name))
-        m_uLocationCache[name] = glGetUniformLocation(m_rendererID, name.c_str());
-    if (m_uLocationCache[name] == -1)
+    auto it = m_uLocationCache.find("key");
+    if (it == m_uLocationCache.end())
+        it = m_uLocationCache.emplace(name, glGetUniformLocation(m_rendererID, name.c_str())).first;
+        
+    if (it->second == -1)
         std::cout << "uniform '" << name << "' doesn't exist in shader\n";
-    return m_uLocationCache[name]; 
+    
+    return it->second; 
 }

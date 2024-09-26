@@ -1,7 +1,6 @@
 #pragma once 
 #include "TestBase.hpp"
 
-#include <array>
 #include <memory>
 
 #include <glm.hpp>

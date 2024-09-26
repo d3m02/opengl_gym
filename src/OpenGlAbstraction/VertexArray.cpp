@@ -1,6 +1,6 @@
 #include "VertexArray.hpp"
 
-#include "Common.hpp"
+#include "OGGCommon.hpp"
 
 #include "VertexBuffer.hpp"
 #include "VertexBufferLayout.hpp"

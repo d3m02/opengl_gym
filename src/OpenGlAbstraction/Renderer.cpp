@@ -1,6 +1,6 @@
 #include "Renderer.hpp"
 
-#include "Common.hpp"
+#include "OGGCommon.hpp"
 
 #include "IndexBuffer.hpp"
 #include "Shader.hpp"

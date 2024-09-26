@@ -11,7 +11,7 @@
 #include <backends/imgui_impl_glfw.h>
 
 
-#include "Common.hpp"
+#include "OGGCommon.hpp"
 #include "Renderer.hpp"
 
 #include "TestMenu.hpp"

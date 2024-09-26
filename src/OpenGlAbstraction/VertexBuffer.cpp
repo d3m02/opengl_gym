@@ -1,6 +1,6 @@
 #include "VertexBuffer.hpp"
 
-#include "Common.hpp"
+#include "OGGCommon.hpp"
 
 VertexBuffer::VertexBuffer(const void* pData, unsigned int size)
 {

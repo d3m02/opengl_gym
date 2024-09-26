@@ -7,7 +7,7 @@
 #include <GL/glew.h>
 #include <glm.hpp>
 
-#include "Common.hpp"
+#include "OGGCommon.hpp"
 
 class Shader 
 {

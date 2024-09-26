@@ -1,6 +1,6 @@
 #include "IndexBuffer.hpp"
 
-#include "Common.hpp"
+#include "OGGCommon.hpp"
 
 IndexBuffer::IndexBuffer(const unsigned int* pData, unsigned int count)
     : m_count(count)
