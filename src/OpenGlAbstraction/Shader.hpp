@@ -26,6 +26,13 @@ public:
     }
 
     
+    template<std::size_t N>
+    void SetUniform1iv(const std::string& name, const int(&values)[N])
+    {
+        GlCall(glUniform1iv(GetUniformLocation(name), N, &values[0]));
+    }
+
+    
     void SetUniformMat4f(const std::string& name, const glm::mat4& matrix)
     {
         GlCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]));

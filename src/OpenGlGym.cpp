@@ -17,6 +17,7 @@
 #include "TestMenu.hpp"
 #include "TestClearColor.hpp"
 #include "TestTexture2D.hpp"
+#include "TestBatchRendering.hpp"
 
 OpenGlGym::~OpenGlGym()
 {
@@ -85,6 +86,7 @@ void OpenGlGym::Run()
 
     pTestMenu->RegisterTest<playtest::TestClearColor>("Clear Color");
     pTestMenu->RegisterTest<playtest::TestTexture2D>("Render texture");
+    pTestMenu->RegisterTest<playtest::TestBatchRendering>("Batch Rendering");
     
     while (glfwWindowShouldClose(pWindow) == GLFW_FALSE)
     {

@@ -11,10 +11,12 @@ target_sources(Playtests
         TestMenu.hpp
         TestClearColor.hpp
         TestTexture2D.hpp
+        TestBatchRendering.hpp
     PRIVATE
         TestMenu.cpp
         TestClearColor.cpp
         TestTexture2D.cpp
+        TestBatchRendering.cpp
 )
 
 target_link_libraries(Playtests 
